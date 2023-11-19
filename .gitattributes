@@ -1,0 +1,5 @@
+# Auto detect text files and perform LF normalization
+* text=auto
+/test_saved_files/20230627_Branch_corr_analysis_updated_June.mat filter=lfs diff=lfs merge=lfs -text
+/test_saved_files/20230627_Cycle_corr_analysis_updated_June.mat filter=lfs diff=lfs merge=lfs -text
+/test_saved_files/20230627_UDreg_corr_analysis_updated_June.mat filter=lfs diff=lfs merge=lfs -text
