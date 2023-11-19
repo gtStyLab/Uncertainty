@@ -1,0 +1,45 @@
+function [divided_num,legend_names] = categorize_identifiability(num_unidentifiable_array,num_model_total)
+
+    %% Input
+        % num_unidentifiable_array - a vector representing number of
+        % unidentifiable models 
+        % num_model_total - a double representing the number of regulatory
+        % netowrk models tested 
+    %% Output 
+        % divided_num - a vector of numbers for pie chart, sum of this
+        % vector should equal to length(num_unidentifiable_array) 
+
+        %% 1. Divide into (ranked #1), (ranked top 1%), (ranked top 5%),
+        % (ranked top 10%), (ranked outside 10%)
+    count1 = sum(num_unidentifiable_array==1); % ranked #1 
+    count2 = sum(num_unidentifiable_array <= 0.01 * num_model_total) - count1; %ranked top 1%
+    count3 = sum(num_unidentifiable_array > 0.01 * num_model_total ...
+        & num_unidentifiable_array <= 0.05 * num_model_total); % ranked top 5%
+    count4 = sum(num_unidentifiable_array > 0.05 * num_model_total ...
+        & num_unidentifiable_array <= 0.1 * num_model_total); % ranked top 10%
+    count5 = sum(num_unidentifiable_array > 0.1 * num_model_total); % ranked outside 10% 
+
+    divided_num = [count1 count2 count3 count4 count5];
+    legend_names = {'Ranked #1','Ranked top 1%','Ranked top 5%','Ranked top 10%','Ranked outside 10%'};
+
+        %% 2. Divide into (top #1), (top #3), (top #5), (top #10), (top #20), and (behind top #20) 
+    % count1 = sum(num_unidentifiable_array == 1); 
+    % count2 = sum(num_unidentifiable_array > 1 & num_unidentifiable_array <= 3); 
+    % count3 = sum(num_unidentifiable_array > 3 & num_unidentifiable_array <= 5); 
+    % count4 = sum(num_unidentifiable_array > 5 & num_unidentifiable_array <= 10);  
+    % count5 = sum(num_unidentifiable_array > 10); 
+    % 
+    % divided_num = [count1 count2 count3 count4 count5];
+    % legend_names = {'Ranked #1','Ranked top 3','Ranked top 5','Ranked top 10','Others'};
+   
+    
+    if ~isequal(sum(divided_num),length(num_unidentifiable_array))
+        error('Inconsistent category values')
+    end
+
+
+
+
+
+
+end

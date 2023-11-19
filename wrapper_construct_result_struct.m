@@ -193,79 +193,79 @@ for topo_idx = 1:length(topology_name_list)
 end
 
 %% 3. Add parameter sensitivity analysis results 
+% 
+% for topo_idx = 1:length(topology_name_list)
+% 
+%     topology_name = topology_name_list{topo_idx}; 
+%     resultFile = load(sprintf('test_saved_files/%s_result_struct_paramVals_updated_June.mat',topology_name));
+%     sensitivity_resultFile = load(sprintf('test_saved_files/%s_parameter_sensitivity.mat',topology_name));
+%     result_struct = resultFile.result_struct; 
+%     sensitivity_result_struct = sensitivity_resultFile.result_struct;
+%     sensitivity_fieldNames = fieldnames(sensitivity_result_struct); 
+% 
+%     for row_idx = 1:36:length(result_struct)
+%         % Get parameter sensitivity from result file and assign them in
+%         % existing result structure 
+%         sensitivity_idx = ceil(row_idx/36);
+%         for field_idx = 5:length(sensitivity_fieldNames)
+%             % Assign new fields if row_idx =1 
+%             field_name = sensitivity_fieldNames{field_idx}; 
+%             eval(sprintf('field_value = sensitivity_result_struct(sensitivity_idx).%s;',field_name)); 
+%             if isequal(row_idx,1)
+%                 eval(sprintf('[result_struct.%s] = deal(nan);',strcat(field_name,'_sensitivity')))
+%             end
+%             eval(sprintf('[result_struct(row_idx:row_idx + 36 -1).%s] = deal(field_value);',...
+%                 strcat(field_name,'_sensitivity')));
+%         end
+%     end
+%     save(sprintf('test_saved_files/%s_result_struct_param_sensitivity_updated_June',topology_name),'result_struct'); 
+% end
 
-for topo_idx = 1:length(topology_name_list)
-
-    topology_name = topology_name_list{topo_idx}; 
-    resultFile = load(sprintf('test_saved_files/%s_result_struct_paramVals_updated_June.mat',topology_name));
-    sensitivity_resultFile = load(sprintf('test_saved_files/%s_parameter_sensitivity.mat',topology_name));
-    result_struct = resultFile.result_struct; 
-    sensitivity_result_struct = sensitivity_resultFile.result_struct;
-    sensitivity_fieldNames = fieldnames(sensitivity_result_struct); 
-
-    for row_idx = 1:36:length(result_struct)
-        % Get parameter sensitivity from result file and assign them in
-        % existing result structure 
-        sensitivity_idx = ceil(row_idx/36);
-        for field_idx = 5:length(sensitivity_fieldNames)
-            % Assign new fields if row_idx =1 
-            field_name = sensitivity_fieldNames{field_idx}; 
-            eval(sprintf('field_value = sensitivity_result_struct(sensitivity_idx).%s;',field_name)); 
-            if isequal(row_idx,1)
-                eval(sprintf('[result_struct.%s] = deal(nan);',strcat(field_name,'_sensitivity')))
-            end
-            eval(sprintf('[result_struct(row_idx:row_idx + 36 -1).%s] = deal(field_value);',...
-                strcat(field_name,'_sensitivity')));
-        end
-    end
-    save(sprintf('test_saved_files/%s_result_struct_param_sensitivity_updated_June',topology_name),'result_struct'); 
-end
-
-% 4. Add parameter ratios 
-for topo_idx = 1:length(topology_name_list)
-
-    topology_name = topology_name_list{topo_idx}; 
-    resultFile = load(sprintf('test_saved_files/%s_result_struct_param_sensitivity_updated_June.mat',topology_name)); 
-    result_struct = resultFile.result_struct;
-
-    modelInfo = get_model_info(topology_name);
-    numMet = size(modelInfo.stoichMatrix,1); 
-
-    % Parameter value ratios 
-    result_struct_fieldNames = fieldnames(result_struct);
-    % Loop from v1_const to before v1_const_sensitivity
-    start_idx = find(strcmp(result_struct_fieldNames,'v1_const')); 
-    end_idx = find(contains(result_struct_fieldNames,'init_1')); 
-    param_name_fieldNames = result_struct_fieldNames(start_idx:end_idx-1); 
-    for nom_param_idx = 1:length(param_name_fieldNames)
-        nominator_param_name = param_name_fieldNames{nom_param_idx};
-
-        for denom_param_idx = nom_param_idx + 1:length(param_name_fieldNames)
-            denom_param_name = param_name_fieldNames{denom_param_idx}; 
-            % Define header name 
-            new_field_name = [nominator_param_name '_over_' denom_param_name];
-            % Calculate parameter ratio
-            eval(sprintf('new_field_value = abs([result_struct.%s] ./ [result_struct.%s]);',nominator_param_name,denom_param_name));
-                % Replace inf with a large positive value 
-            new_field_value(isinf(new_field_value)) = 1e+08; 
-            new_field_value_cell = num2cell(new_field_value');
-            % Assign new columns to table 
-            eval(sprintf('[result_struct.%s] = new_field_value_cell{:};',new_field_name));
-        end
-    end
-
-    save(sprintf('test_saved_files/%s_result_struct_param_ratio_updated_June',topology_name),'result_struct'); 
-
-end
+%% 4. Add parameter ratios 
+% for topo_idx = 1:length(topology_name_list)
+% 
+%     topology_name = topology_name_list{topo_idx}; 
+%     resultFile = load(sprintf('test_saved_files/%s_result_struct_param_sensitivity_updated_June.mat',topology_name)); 
+%     result_struct = resultFile.result_struct;
+% 
+%     modelInfo = get_model_info(topology_name);
+%     numMet = size(modelInfo.stoichMatrix,1); 
+% 
+%     % Parameter value ratios 
+%     result_struct_fieldNames = fieldnames(result_struct);
+%     % Loop from v1_const to before v1_const_sensitivity
+%     start_idx = find(strcmp(result_struct_fieldNames,'v1_const')); 
+%     end_idx = find(contains(result_struct_fieldNames,'init_1')); 
+%     param_name_fieldNames = result_struct_fieldNames(start_idx:end_idx-1); 
+%     for nom_param_idx = 1:length(param_name_fieldNames)
+%         nominator_param_name = param_name_fieldNames{nom_param_idx};
+% 
+%         for denom_param_idx = nom_param_idx + 1:length(param_name_fieldNames)
+%             denom_param_name = param_name_fieldNames{denom_param_idx}; 
+%             % Define header name 
+%             new_field_name = [nominator_param_name '_over_' denom_param_name];
+%             % Calculate parameter ratio
+%             eval(sprintf('new_field_value = abs([result_struct.%s] ./ [result_struct.%s]);',nominator_param_name,denom_param_name));
+%                 % Replace inf with a large positive value 
+%             new_field_value(isinf(new_field_value)) = 1e+08; 
+%             new_field_value_cell = num2cell(new_field_value');
+%             % Assign new columns to table 
+%             eval(sprintf('[result_struct.%s] = new_field_value_cell{:};',new_field_name));
+%         end
+%     end
+% 
+%     save(sprintf('test_saved_files/%s_result_struct_param_ratio_updated_June',topology_name),'result_struct'); 
+% 
+% end
 
 
-% 5. Unpack the current result struct and add features extracted from time-course
+%% 5. Unpack the current result struct and add features extracted from time-course
 
     % Load the result struct 
 for topo_idx = 1:length(topology_name_list)
 
     topology_name = topology_name_list{topo_idx}; 
-    resultFile = load(sprintf('test_saved_files/%s_result_struct_param_ratio_updated_June.mat',topology_name)); 
+    resultFile = load(sprintf('test_saved_files/%s_result_struct_paramVals_updated_June.mat',topology_name)); 
     result_struct = resultFile.result_struct;
 
 

@@ -36,7 +36,7 @@ end
 
 
 
-% save(sprintf('paramsList/paramsList%s_regNetwork_%d.mat',topology_full_name,regNetwork_label),'paramsList');
+save(sprintf('paramsList/paramsList%s_regNetwork_%d.mat',topology_full_name,regNetwork_label),'paramsList');
 
 
 

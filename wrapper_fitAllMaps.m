@@ -1,6 +1,7 @@
 function wrapper_fitAllMaps(topology_idx,crossTalk_idx,reg_topo_num,paramSetNum,nT,cov,rep,missing_metabolite_idx)
 
-    addpath(genpath('/storage/home/hcoda1/5/yhan309/scratch/uncertainty_main'));
+    currentpath = pwd; 
+    addpath(genpath(currentpath));
     
     topology_name_list = {'Branch','UDreg','Cycle'};
     crossTalk_list = {'CrossTalk','NoCrossTalk',''};
